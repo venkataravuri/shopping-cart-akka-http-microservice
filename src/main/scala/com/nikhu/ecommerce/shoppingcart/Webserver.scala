@@ -40,16 +40,17 @@ object WebServer extends LazyLogging with JsonSupport with App {
 
   val routes = {
     logRequestResult("shopping-cart-akka-http-microservice") {
-      pathPrefix("cart" / IntNumber) { cartId =>
+      pathPrefix("cart" / Remaining) { cartId =>
         get {
           complete {
-            logger.debug(s"cartId: $cartId")
+            println(s"cartId: $cartId")
             shoppingCarts.filter(_.id == cartId)
           }
         }
       }
     }
   }
+
   val config = ConfigFactory.load()
   val (interface, port) = (config.getString("http.interface"), config.getInt("http.port"))
   val bindingFuture = Http().bindAndHandle(handler = routes, interface = interface, port = port)
